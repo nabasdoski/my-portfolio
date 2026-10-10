@@ -97,7 +97,7 @@ export default function ContactForm() {
   }
 
   const inputClass =
-    "mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 dark:border-white/10 dark:bg-white/[0.04] dark:text-white";
+    "mt-1.5 sm:mt-2 w-full rounded-xl border border-black/10 bg-white px-3.5 py-3 text-base sm:text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 dark:border-white/10 dark:bg-white/[0.04] dark:text-white";
 
   const statusStyles = {
     success:
@@ -109,14 +109,13 @@ export default function ContactForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-10 space-y-5">
+    <form onSubmit={handleSubmit} className="mt-6 space-y-4 sm:mt-10 sm:space-y-5">
+      {/* Honeypot field for basic bot filtering */}
       <div
         aria-hidden="true"
         className="absolute left-[-10000px] h-px w-px overflow-hidden"
       >
-        <label htmlFor="contact-website">
-          Leave this field empty
-        </label>
+        <label htmlFor="contact-website">Leave this field empty</label>
         <input
           id="contact-website"
           name="website"
@@ -211,7 +210,7 @@ export default function ContactForm() {
           required
           minLength={1}
           maxLength={5000}
-          rows={5}
+          rows={4}
           value={message}
           onChange={(e) => {
             setMessage(e.target.value);
@@ -226,7 +225,7 @@ export default function ContactForm() {
         <div
           role={statusType === "error" ? "alert" : "status"}
           aria-live="polite"
-          className={`flex items-start gap-3 rounded-2xl border p-4 text-sm leading-6 shadow-sm ${statusStyles[statusType]}`}
+          className={`flex items-start gap-3 rounded-2xl border p-3 text-sm leading-6 shadow-sm sm:p-4 ${statusStyles[statusType]}`}
         >
           <span
             aria-hidden="true"
@@ -287,7 +286,7 @@ export default function ContactForm() {
               {statusType === "warning" && "Please wait a moment"}
               {statusType === "error" && "Message could not be sent"}
             </p>
-            <p className="mt-0.5 opacity-90">{status}</p>
+            <p className="mt-0.5 break-words opacity-90">{status}</p>
           </div>
         </div>
       )}
@@ -295,7 +294,7 @@ export default function ContactForm() {
       <button
         type="submit"
         disabled={loading}
-        className="inline-flex items-center justify-center gap-2 rounded-full bg-[#256DD3] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1d5bb3] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#256DD3] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1d5bb3] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
       >
         {loading ? (
           <>
