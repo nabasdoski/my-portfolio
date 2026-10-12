@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { Arrow } from "@/components/useTranslations";
 
 type ProductCardProps = {
   number: string;
@@ -7,6 +9,7 @@ type ProductCardProps = {
   technologies: string[];
   href: string;
   visual: "akuzzle" | "medicine";
+  cta: string;
 };
 
 export default function ProductCard({
@@ -17,6 +20,7 @@ export default function ProductCard({
   technologies,
   href,
   visual,
+  cta,
 }: ProductCardProps) {
   return (
     <article className="group overflow-hidden rounded-2xl border border-black/10 bg-white transition duration-500 hover:-translate-y-1 hover:border-blue-500/30 dark:border-white/[0.08] dark:bg-white/[0.025] sm:rounded-[2rem]">
@@ -96,15 +100,13 @@ export default function ProductCard({
           ))}
         </div>
 
-        <a
+        <Link
           href={href}
           className="mt-5 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-gray-700 transition group-hover:text-blue-500 dark:text-gray-300 dark:group-hover:text-blue-400 sm:mt-8"
         >
-          View case study
-          <span className="transition-transform group-hover:translate-x-1">
-            →
-          </span>
-        </a>
+          {cta}
+          <Arrow className="group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+        </Link>
       </div>
     </article>
   );

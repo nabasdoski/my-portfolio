@@ -10,16 +10,12 @@ export default function ProductScreenshots({
   return (
     <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
       {images.map((image, index) => (
-        <div
-          key={image}
-          className="group relative"
-        >
+        <div key={image} className="group relative">
           {/* Glow */}
           <div className="absolute -inset-4 rounded-[2.5rem] bg-blue-500/0 blur-2xl transition duration-700 group-hover:bg-blue-500/10" />
 
           {/* Card */}
           <div className="relative overflow-hidden rounded-[2rem] border border-white/[0.08] bg-[#0a1422] p-3 shadow-xl shadow-black/20 transition-all duration-500 group-hover:-translate-y-2 group-hover:border-blue-500/30 group-hover:shadow-2xl group-hover:shadow-blue-500/10">
-            
             {/* Screenshot */}
             <div className="relative aspect-[9/16] overflow-hidden rounded-[1.5rem] bg-[#07111f]">
               <Image

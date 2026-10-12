@@ -1,15 +1,21 @@
-
 "use client";
 
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useLanguage } from "@/components/LanguageProvider";
+import { useTranslations } from "@/components/useTranslations";
 
 const screenshots = "/images/medicine-finder/";
 
-const sectionClass =
-  "border-b border-black/10 dark:border-white/[0.06]";
+const APP_STORE_URL =
+  "https://apps.apple.com/us/app/medicine-finder/id6771959046";
+const ANDROID_URL = "https://apkpure.net/medicine-finder/com.medicinefinder";
+const WEBSITE_URL = "https://medicine-finder.com";
+
+const sectionClass = "border-b border-black/10 dark:border-white/[0.06]";
 
 const containerClass =
   "mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-24";
@@ -23,118 +29,61 @@ const headingClass =
 const bodyClass =
   "text-sm leading-6 text-gray-500 sm:leading-7 dark:text-gray-400";
 
-const tags = [
-  "iOS",
-  "Android",
-  "AI",
-  "Pharmacy Network",
-  "Messaging",
-  "Role-based Access",
+const navLinkClass =
+  "text-sm text-gray-500 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-white";
+
+const pillLinkClass =
+  "rounded-full border border-black/10 px-4 py-2 text-xs font-medium text-gray-700 transition hover:bg-black/[0.04] dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/[0.05] sm:text-sm";
+
+/**
+ * Screenshots. Where the dictionary has a list (roles, steps, features...)
+ * the screenshot at the same index is shown next to it. If you reorder a
+ * list in translations.ts, reorder the matching array here too.
+ */
+const overviewImages = [
+  "user-home.png",
+  "pharmacy-home.png",
+  "drug-company-home.png",
 ];
 
-const userRoles = [
-  {
-    title: "Users",
-    text: "Search pharmacies, request medication availability and communicate.",
-  },
-  {
-    title: "Pharmacies",
-    text: "Receive requests, respond, communicate and use pharmacy tools.",
-  },
-  {
-    title: "Drug companies",
-    text: "Use a dedicated business experience for company-related operations.",
-  },
+const howItWorksImages = [
+  "user-request.png",
+  "pharmacy-response.png",
+  "notification.png",
+  "chat.png",
 ];
 
-const requestSteps = [
-  { number: "01", title: "Request", image: "user-request.png" },
-  {
-    number: "02",
-    title: "Pharmacy response",
-    image: "pharmacy-response.png",
-  },
-  { number: "03", title: "Notification", image: "notification.png" },
-  { number: "04", title: "Conversation", image: "chat.png" },
+const discoveryImages = [
+  "nearby-pharmacies.png",
+  "pharmacy-profile.png",
+  "pharmacy-contact.png",
 ];
 
-const discoverySteps = [
-  { image: "nearby-pharmacies.png", alt: "Nearby pharmacies" },
-  { image: "pharmacy-profile.png", alt: "Pharmacy profile" },
-  { image: "pharmacy-contact.png", alt: "Contact pharmacy" },
+const businessImages = [
+  "entity-registration.png",
+  "registration-review.png",
+  "entity-approval.png",
 ];
 
-const businessSteps = [
-  { number: "01", title: "Registration", image: "entity-registration.png" },
-  { number: "02", title: "Admin review", image: "registration-review.png" },
-  { number: "03", title: "Approval", image: "entity-approval.png" },
-  { number: "04", title: "Subscription", image: "subscription-payment.png" },
+// These galleries are shown as screenshots only (no per-image captions),
+// because the dictionary features don't line up one-to-one with them.
+const pharmacyImages = [
+  "pharmacy-requests.png",
+  "pharmacy-messaging.png",
+  "pharmacy-call.png",
+  "pharmacy-tools.png",
 ];
 
-const pharmacyTools = [
-  { image: "pharmacy-requests.png", title: "Requests" },
-  { image: "pharmacy-messaging.png", title: "Messaging" },
-  { image: "pharmacy-call.png", title: "Calls" },
-  { image: "pharmacy-tools.png", title: "More tools" },
+const learningImages = ["courses.png", "books.png", "blogs.png", "quizzes.png"];
+
+const adminImages = [
+  "admin-registrations.png",
+  "admin-entities.png",
+  "admin-packages.png",
+  "admin-content.png",
 ];
 
-const platformCapabilities = [
-  ["Mobile", "iOS and Android experiences"],
-  ["Communication", "Messaging, images and calls"],
-  ["AI", "Prescription-reading assistance"],
-  ["Access", "Role-based experiences and permissions"],
-  ["Business", "Subscriptions and packages"],
-  ["Administration", "Content and platform management"],
-];
-
-const learningItems = [
-  { image: "courses.png", title: "Courses" },
-  { image: "books.png", title: "Books" },
-  { image: "blogs.png", title: "Blogs" },
-  { image: "quizzes.png", title: "Quizzes" },
-];
-
-const adminItems = [
-  {
-    image: "admin-registrations.png",
-    title: "Registrations",
-    text: "Review incoming entity registrations.",
-  },
-  {
-    image: "admin-entities.png",
-    title: "Entities",
-    text: "Manage pharmacies and drug companies.",
-  },
-  {
-    image: "admin-packages.png",
-    title: "Packages",
-    text: "Configure subscription plans.",
-  },
-  {
-    image: "admin-content.png",
-    title: "Content",
-    text: "Manage courses, books, blogs and quizzes.",
-  },
-];
-
-const securityItems = [
-  {
-    title: "Role-based access",
-    text: "Users, pharmacies and drug companies have different experiences and permissions.",
-  },
-  {
-    title: "Controlled registration",
-    text: "Pharmacy and drug company registrations are reviewed through the administration system.",
-  },
-  {
-    title: "Protected communication",
-    text: "Users and participating pharmacies can communicate through the platform within their respective roles.",
-  },
-  {
-    title: "Privacy controls",
-    text: "Account, communication and privacy controls support responsible handling of platform data.",
-  },
-];
+const pad = (index: number) => String(index + 1).padStart(2, "0");
 
 function SectionHeading({
   label,
@@ -150,9 +99,7 @@ function SectionHeading({
       <p className={eyebrowClass}>{label}</p>
       <h2 className={headingClass}>{title}</h2>
       {description && (
-        <p className={`mt-3 max-w-2xl ${bodyClass} sm:mt-5`}>
-          {description}
-        </p>
+        <p className={`mt-3 max-w-2xl ${bodyClass} sm:mt-5`}>{description}</p>
       )}
     </div>
   );
@@ -186,61 +133,132 @@ function ScreenshotCard({
   );
 }
 
+function Gallery({
+  images,
+  label,
+  width,
+  height,
+}: {
+  images: string[];
+  label: string;
+  width?: number;
+  height?: number;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+      {images.map((image, index) => (
+        <div key={image} className="min-w-0">
+          <ScreenshotCard
+            image={image}
+            alt={`${label} ${index + 1}`}
+            width={width}
+            height={height}
+            compact
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function FeatureCard({
+  title,
+  description,
+  number,
+  className = "",
+}: {
+  title: string;
+  description: string;
+  number?: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`min-w-0 rounded-xl border border-black/10 p-3.5 dark:border-white/[0.07] sm:rounded-2xl sm:p-5 ${className}`}
+    >
+      {number && (
+        <span className="text-[10px] font-medium tracking-[0.16em] text-blue-500 sm:text-xs sm:tracking-[0.2em]">
+          {number}
+        </span>
+      )}
+      <p className={`text-sm font-semibold ${number ? "mt-1.5" : ""}`}>
+        {title}
+      </p>
+      <p className="mt-1.5 text-xs leading-5 text-gray-500 dark:text-gray-400 sm:leading-6">
+        {description}
+      </p>
+    </div>
+  );
+}
+
 export default function MedicineFinderPage() {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const { direction } = useLanguage();
+  const t = useTranslations();
+  const m = t.medicineFinder;
+
   const closeMenu = () => setMenuOpen(false);
 
+  // medicineFinder.nav has no "projects" or "technology" keys, so those two
+  // labels are borrowed from existing entries.
+  const mobileLinks = [
+    { label: t.akuzzle.nav.projects, href: "/#products" },
+    { label: m.nav.overview, href: "#overview" },
+    { label: m.nav.howItWorks, href: "#how-it-works" },
+    { label: m.nav.discovery, href: "#pharmacy-discovery" },
+    { label: m.nav.ai, href: "#ai-capability" },
+    { label: m.nav.business, href: "#business-workflow" },
+    { label: m.nav.pharmacy, href: "#pharmacy-workspace" },
+    { label: m.nav.learning, href: "#learning" },
+    { label: m.nav.admin, href: "#administration" },
+    { label: m.nav.security, href: "#security" },
+    { label: m.technology.eyebrow, href: "#technology" },
+  ];
+
   return (
-    <main className="min-h-screen overflow-x-clip bg-white text-gray-900 dark:bg-[#05070b] dark:text-white">
+    <main
+      dir={direction}
+      className="min-h-screen overflow-x-clip bg-white text-gray-900 dark:bg-[#05070b] dark:text-white"
+    >
       {/* NAVBAR */}
       <header className="fixed inset-x-0 top-0 z-50 border-b border-black/10 bg-white/90 backdrop-blur-xl dark:border-white/[0.06] dark:bg-[#05070b]/90">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:h-20 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:h-20 sm:px-6 lg:px-8">
           <Link
             href="/"
             onClick={closeMenu}
-            className="text-sm font-semibold tracking-[0.18em] text-gray-900 dark:text-white"
+            className="shrink-0 text-sm font-semibold tracking-[0.18em] text-gray-900 dark:text-white"
           >
             NABAZ
           </Link>
 
-          <nav className="hidden items-center gap-5 md:flex lg:gap-6">
-            <Link
-              href="/#products"
-              className="text-sm text-gray-500 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-            >
-              All projects
+          <nav className="hidden items-center gap-4 md:flex lg:gap-6">
+            <Link href="/#products" className={navLinkClass}>
+              {t.akuzzle.nav.projects}
             </Link>
-            <a
-              href="#overview"
-              className="text-sm text-gray-500 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-            >
-              Overview
+            <a href="#overview" className={navLinkClass}>
+              {m.nav.overview}
             </a>
-            <a
-              href="#how-it-works"
-              className="text-sm text-gray-500 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-            >
-              How it works
+            <a href="#how-it-works" className={navLinkClass}>
+              {m.nav.howItWorks}
             </a>
-            <a
-              href="#technology"
-              className="text-sm text-gray-500 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-            >
-              Technology
+            <a href="#technology" className={navLinkClass}>
+              {m.technology.eyebrow}
             </a>
+            <LanguageSwitcher />
             <ThemeToggle />
           </nav>
 
-          <div className="flex items-center gap-2 md:hidden">
+          <div className="flex shrink-0 items-center gap-2 md:hidden">
+            <LanguageSwitcher />
             <ThemeToggle />
             <button
               type="button"
               onClick={() => setMenuOpen((open) => !open)}
-              aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-label={menuOpen ? m.nav.closeMenu : m.nav.openMenu}
               aria-expanded={menuOpen}
               aria-controls="mobile-navigation"
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-black/10 text-gray-800 transition hover:bg-black/[0.04] dark:border-white/10 dark:text-white dark:hover:bg-white/[0.06]"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-black/10 text-gray-800 transition hover:bg-black/[0.04] dark:border-white/10 dark:text-white dark:hover:bg-white/[0.06]"
             >
               {menuOpen ? (
                 <svg
@@ -275,18 +293,7 @@ export default function MedicineFinderPage() {
             className="border-t border-black/10 bg-white px-4 py-3 dark:border-white/[0.08] dark:bg-[#080c13] md:hidden"
           >
             <div className="mx-auto flex max-w-7xl flex-col">
-              {[
-                { label: "All projects", href: "/#products" },
-                { label: "Overview", href: "#overview" },
-                { label: "How it works", href: "#how-it-works" },
-                { label: "Pharmacy discovery", href: "#pharmacy-discovery" },
-                { label: "AI capability", href: "#ai-capability" },
-                { label: "Business workflow", href: "#business-workflow" },
-                { label: "Learning & quizzes", href: "#learning" },
-                { label: "Administration", href: "#administration" },
-                { label: "Security & privacy", href: "#security" },
-                { label: "Technology", href: "#technology" },
-              ].map((item) => (
+              {mobileLinks.map((item) => (
                 <a
                   key={item.href}
                   href={item.href}
@@ -307,7 +314,7 @@ export default function MedicineFinderPage() {
 
         <div className="relative mx-auto max-w-7xl px-4 pb-12 sm:px-6 sm:pb-16 lg:px-8 lg:pb-24">
           <div className="grid items-center gap-8 sm:gap-12 lg:grid-cols-[1fr_0.8fr] lg:gap-16">
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-3 sm:gap-4">
                 <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-black/10 bg-white shadow-lg dark:border-white/10 dark:bg-[#0d1b2d] sm:h-14 sm:w-14 sm:rounded-2xl">
                   <Image
@@ -319,12 +326,10 @@ export default function MedicineFinderPage() {
                   />
                 </div>
 
-                <div>
-                  <p className={eyebrowClass}>
-                    02 · Healthcare Technology
-                  </p>
+                <div className="min-w-0">
+                  <p className={eyebrowClass}>02 · {m.hero.category}</p>
                   <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 sm:text-sm">
-                    Digital healthcare platform
+                    {m.hero.platform}: {m.hero.platformValue}
                   </p>
                 </div>
               </div>
@@ -333,55 +338,64 @@ export default function MedicineFinderPage() {
                 Medicine Finder
               </h1>
 
-              <p className="mt-4 max-w-2xl text-lg leading-7 text-gray-600 dark:text-gray-400 sm:mt-6 sm:text-xl sm:leading-8">
-                Connecting people with pharmacies when medication availability
-                matters.
+              <p className="mt-4 max-w-2xl text-lg font-medium leading-7 text-gray-700 dark:text-gray-300 sm:mt-6 sm:text-xl sm:leading-8">
+                {m.hero.title}
               </p>
 
               <p className="mt-3 max-w-xl text-sm leading-6 text-gray-500 sm:mt-5 sm:text-base sm:leading-7 dark:text-gray-500">
-                A multilingual healthcare directory and communication platform
-                that helps users find participating pharmacies, request
-                medication availability, and communicate directly.
+                {m.hero.intro}
               </p>
-
-              <div className="mt-5 flex flex-wrap gap-2 sm:mt-8">
-                {tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1.5 text-[11px] text-gray-600 dark:border-white/10 dark:bg-white/[0.04] dark:text-gray-400 sm:px-4 sm:py-2 sm:text-xs"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
 
               <div className="mt-6 flex flex-wrap gap-2.5 sm:mt-9 sm:gap-3">
                 <a
-                  href="https://apps.apple.com/us/app/medicine-finder/id6771959046"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="rounded-full bg-gray-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200 sm:px-5 sm:py-3"
+                  href="#overview"
+                  className="rounded-full bg-blue-600 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-blue-500 sm:px-7 sm:py-3.5"
                 >
-                  App Store
+                  {m.hero.explore}
                 </a>
 
                 <a
-                  href="https://apkpure.net/medicine-finder/com.medicinefinder"
-                  target="_blank"
-                  rel="noreferrer"
+                  href="#how-it-works"
                   className="rounded-full border border-black/10 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-black/[0.04] dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/[0.05] sm:px-5 sm:py-3"
                 >
-                  Android
+                  {m.hero.viewFeatures}
                 </a>
+              </div>
+
+              <div className="mt-5 flex flex-wrap items-center gap-2 sm:mt-7">
+                <span className="text-xs text-gray-500 dark:text-gray-400 sm:text-sm">
+                  {m.hero.availableOn}
+                </span>
 
                 <a
-                  href="https://medicine-finder.com"
+                  href={APP_STORE_URL}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-full border border-black/10 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-black/[0.04] dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/[0.05] sm:px-5 sm:py-3"
+                  className={pillLinkClass}
                 >
-                  Website
+                  {m.hero.ios}
                 </a>
+                <a
+                  href={ANDROID_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={pillLinkClass}
+                >
+                  {m.hero.android}
+                </a>
+                <a
+                  href={WEBSITE_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={pillLinkClass}
+                >
+                  {m.hero.web}
+                </a>
+              </div>
+
+              <div className="mt-10 hidden items-center gap-3 text-xs text-gray-400 lg:flex">
+                <span className="h-px w-8 bg-current" />
+                {m.hero.scroll}
               </div>
             </div>
 
@@ -392,7 +406,7 @@ export default function MedicineFinderPage() {
                 <div className="overflow-hidden rounded-[1.35rem] sm:rounded-[2rem]">
                   <Image
                     src="/images/medicine-finder/user-home.png"
-                    alt="Medicine Finder application home screen"
+                    alt={`Medicine Finder — ${m.hero.platformValue}`}
                     width={1200}
                     height={1600}
                     priority
@@ -411,52 +425,47 @@ export default function MedicineFinderPage() {
         <div className={containerClass}>
           <div className="grid gap-4 md:grid-cols-[1.2fr_0.8fr] md:items-end md:gap-8">
             <SectionHeading
-              label="The product"
-              title="One platform connecting people, pharmacies and healthcare businesses."
+              label={m.overview.eyebrow}
+              title={m.overview.title}
             />
 
-            <p className={bodyClass}>
-              The experience changes according to the user&apos;s role, while
-              administration controls registrations, subscriptions, content
-              and platform access.
-            </p>
+            <p className={bodyClass}>{m.overview.description}</p>
           </div>
 
           <div className="mt-7 grid grid-cols-3 gap-2 sm:mt-10 sm:gap-4">
-            <ScreenshotCard
-              image="user-home.png"
-              alt="Medicine Finder user experience"
-            />
-            <ScreenshotCard
-              image="pharmacy-home.png"
-              alt="Medicine Finder pharmacy experience"
-            />
-            <ScreenshotCard
-              image="drug-company-home.png"
-              alt="Medicine Finder drug company experience"
-            />
+            {overviewImages.map((image, index) => (
+              <ScreenshotCard
+                key={image}
+                image={image}
+                alt={m.overview.roles[index]?.title ?? "Medicine Finder"}
+              />
+            ))}
           </div>
 
-          <div className="mt-4 grid gap-3 sm:mt-6 sm:grid-cols-3 sm:gap-4">
-            {userRoles.map((role) => (
+          <div className="mt-8 sm:mt-12">
+            <h3 className="text-base font-semibold sm:text-lg">
+              {m.overview.rolesTitle}
+            </h3>
+            <p className={`mt-2 max-w-2xl ${bodyClass}`}>
+              {m.overview.rolesDescription}
+            </p>
+          </div>
+
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+            {m.overview.roles.map((role) => (
               <div
                 key={role.title}
-                className="rounded-2xl border border-black/10 p-4 dark:border-white/[0.07] sm:p-5"
+                className="min-w-0 rounded-2xl border border-black/10 p-4 dark:border-white/[0.07] sm:p-5"
               >
                 <p className="text-[10px] uppercase tracking-[0.18em] text-blue-500 sm:text-xs sm:tracking-[0.2em]">
                   {role.title}
                 </p>
                 <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400">
-                  {role.text}
+                  {role.description}
                 </p>
               </div>
             ))}
           </div>
-
-          <p className="mt-5 text-xs leading-5 text-gray-500 sm:mt-6 sm:text-sm sm:leading-6">
-            Medicine Finder supports Kurdish, Arabic and English, helping
-            different communities use the platform in their preferred language.
-          </p>
         </div>
       </section>
 
@@ -464,38 +473,47 @@ export default function MedicineFinderPage() {
       <section id="how-it-works" className={sectionClass}>
         <div className={containerClass}>
           <SectionHeading
-            label="How it works"
-            title="From a request to a pharmacy conversation."
+            label={m.howItWorks.eyebrow}
+            title={m.howItWorks.title}
+            description={m.howItWorks.description}
           />
 
           <div className="mt-7 grid grid-cols-2 gap-3 sm:mt-10 sm:gap-4 lg:grid-cols-4">
-            {requestSteps.map((item) => (
-              <div key={item.number} className="min-w-0">
-                <ScreenshotCard
-                  image={item.image}
-                  alt={item.title}
-                  compact
-                />
+            {m.howItWorks.steps.map((step, index) => (
+              <div key={step.title} className="min-w-0">
+                {howItWorksImages[index] && (
+                  <ScreenshotCard
+                    image={howItWorksImages[index]}
+                    alt={step.title}
+                    compact
+                  />
+                )}
                 <div className="mt-2.5 flex items-start gap-2 sm:mt-4 sm:gap-3">
                   <span className="pt-0.5 text-[10px] font-medium tracking-[0.16em] text-blue-500 sm:text-xs sm:tracking-[0.2em]">
-                    {item.number}
+                    {pad(index)}
                   </span>
-                  <h3 className="text-xs font-semibold leading-5 sm:text-sm">
-                    {item.title}
-                  </h3>
+                  <div className="min-w-0">
+                    <h3 className="text-xs font-semibold leading-5 sm:text-sm">
+                      {step.title}
+                    </h3>
+                    <p className="mt-1 text-[11px] leading-5 text-gray-500 dark:text-gray-400 sm:text-xs sm:leading-6">
+                      {step.description}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
           <div className="mt-5 rounded-2xl border border-blue-500/15 bg-blue-500/[0.04] p-4 sm:mt-8 sm:rounded-3xl sm:p-6">
-            <p className="text-sm leading-6 text-gray-600 dark:text-gray-400 sm:leading-7">
-              While a medication request is active, it is updated and sent to
-              participating pharmacies every 10 seconds. The user can stop the
-              request at any time. Pharmacies can respond with a quick
-              availability response or send a message. Users receive
-              notifications and can continue the conversation through text,
-              images or calls.
+            <p className="text-sm font-semibold text-gray-900 dark:text-white">
+              {m.howItWorks.requestTitle}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-400 sm:leading-7">
+              {m.howItWorks.requestDescription}
+            </p>
+            <p className="mt-3 text-xs font-medium text-blue-500">
+              {m.howItWorks.stopRequest}
             </p>
           </div>
         </div>
@@ -505,20 +523,39 @@ export default function MedicineFinderPage() {
       <section id="pharmacy-discovery" className={sectionClass}>
         <div className={containerClass}>
           <div className="grid items-center gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12">
-            <div>
+            <div className="min-w-0">
               <SectionHeading
-                label="Pharmacy discovery"
-                title="Users can also find and contact pharmacies directly."
-                description="Search nearby participating pharmacies, open a profile and start a conversation about medication availability."
+                label={m.discovery.eyebrow}
+                title={m.discovery.title}
+                description={m.discovery.description}
               />
+
+              <div className="mt-5 sm:mt-7">
+                <h3 className="text-sm font-semibold sm:text-base">
+                  {m.discovery.searchTitle}
+                </h3>
+                <p className={`mt-1.5 ${bodyClass}`}>
+                  {m.discovery.searchDescription}
+                </p>
+              </div>
+
+              <div className="mt-4 grid gap-2.5 sm:gap-3">
+                {m.discovery.features.map((feature) => (
+                  <FeatureCard
+                    key={feature.title}
+                    title={feature.title}
+                    description={feature.description}
+                  />
+                ))}
+              </div>
             </div>
 
             <div className="grid grid-cols-3 gap-2 sm:gap-3">
-              {discoverySteps.map((item) => (
+              {discoveryImages.map((image, index) => (
                 <ScreenshotCard
-                  key={item.image}
-                  image={item.image}
-                  alt={item.alt}
+                  key={image}
+                  image={image}
+                  alt={m.discovery.features[index]?.title ?? "Medicine Finder"}
                   compact
                 />
               ))}
@@ -533,240 +570,163 @@ export default function MedicineFinderPage() {
           <div className="grid items-center gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12">
             <ScreenshotCard
               image="ai-prescription-reader.png"
-              alt="AI prescription reader for pharmacists"
+              alt={m.ai.title}
               width={1600}
               height={1100}
             />
 
-            <div>
+            <div className="min-w-0">
               <SectionHeading
-                label="AI capability"
-                title="AI assistance for difficult prescriptions."
-                description="The pharmacy experience includes an AI-powered prescription reader to assist authorized pharmacists when working with difficult-to-read prescription information."
+                label={m.ai.eyebrow}
+                title={m.ai.title}
+                description={m.ai.description}
               />
 
               <div className="mt-5 grid gap-2.5 sm:mt-7 sm:gap-3">
-                {[
-                  {
-                    title: "Pharmacy-only",
-                    text: "Available within the authorized pharmacy experience.",
-                  },
-                  {
-                    title: "AI-assisted",
-                    text: "Supports pharmacists when prescription information is difficult to read.",
-                  },
-                  {
-                    title: "Professional verification",
-                    text: "AI does not replace professional judgment or clinical responsibility.",
-                  },
-                ].map((item) => (
-                  <div
-                    key={item.title}
-                    className="rounded-xl border border-black/10 p-3.5 dark:border-white/[0.07] sm:rounded-2xl sm:p-4"
-                  >
-                    <p className="text-sm font-semibold">{item.title}</p>
-                    <p className="mt-1 text-xs leading-5 text-gray-500 sm:leading-6 dark:text-gray-400">
-                      {item.text}
-                    </p>
-                  </div>
+                {m.ai.steps.map((step, index) => (
+                  <FeatureCard
+                    key={step.title}
+                    number={pad(index)}
+                    title={step.title}
+                    description={step.description}
+                  />
                 ))}
+              </div>
+
+              <div className="mt-3 rounded-xl border border-blue-500/15 bg-blue-500/[0.04] p-3.5 sm:mt-4 sm:rounded-2xl sm:p-5">
+                <p className="text-sm font-semibold">{m.ai.noteTitle}</p>
+                <p className="mt-1.5 text-xs leading-5 text-gray-600 dark:text-gray-400 sm:leading-6">
+                  {m.ai.noteDescription}
+                </p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* BUSINESS FLOW */}
+      {/* BUSINESS */}
       <section id="business-workflow" className={sectionClass}>
         <div className={containerClass}>
           <div className="grid gap-3 md:grid-cols-[1.2fr_0.8fr] md:items-end md:gap-8">
             <SectionHeading
-              label="Business workflow"
-              title="Controlled registration and activation."
+              label={m.business.eyebrow}
+              title={m.business.title}
             />
-            <p className={bodyClass}>
-              Pharmacies and drug companies pass through administration review
-              before becoming active subscribed entities.
-            </p>
+            <p className={bodyClass}>{m.business.description}</p>
           </div>
 
-          <div className="mt-7 grid grid-cols-2 gap-3 sm:mt-10 sm:gap-4 lg:grid-cols-4">
-            {businessSteps.map((item) => (
-              <div key={item.number} className="min-w-0">
-                <ScreenshotCard
-                  image={item.image}
-                  alt={item.title}
-                  compact
-                />
+          <div className="mt-7 grid grid-cols-2 gap-3 sm:mt-10 sm:grid-cols-3 sm:gap-4">
+            {m.business.features.map((feature, index) => (
+              <div key={feature.title} className="min-w-0">
+                {businessImages[index] && (
+                  <ScreenshotCard
+                    image={businessImages[index]}
+                    alt={feature.title}
+                    compact
+                  />
+                )}
                 <div className="mt-2.5 sm:mt-4">
                   <span className="text-[10px] font-medium tracking-[0.16em] text-blue-500 sm:text-xs sm:tracking-[0.2em]">
-                    {item.number}
+                    {pad(index)}
                   </span>
                   <h3 className="mt-1 text-xs font-semibold sm:mt-2 sm:text-sm">
-                    {item.title}
+                    {feature.title}
                   </h3>
+                  <p className="mt-1 text-[11px] leading-5 text-gray-500 dark:text-gray-400 sm:text-xs sm:leading-6">
+                    {feature.description}
+                  </p>
                 </div>
               </div>
             ))}
-          </div>
-
-          <div className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[11px] text-gray-500 sm:mt-7 sm:justify-center sm:gap-x-3 sm:text-xs">
-            <span>Registration</span>
-            <span aria-hidden="true">→</span>
-            <span>Admin review</span>
-            <span aria-hidden="true">→</span>
-            <span>Approval</span>
-            <span aria-hidden="true">→</span>
-            <span>Subscription payment</span>
           </div>
         </div>
       </section>
 
       {/* PHARMACY WORKSPACE */}
-      <section className={sectionClass}>
+      <section id="pharmacy-workspace" className={sectionClass}>
         <div className={containerClass}>
           <SectionHeading
-            label="Pharmacy workspace"
-            title="Tools designed around the pharmacy workflow."
-            description="Medication requests, messaging, calls and additional role-specific tools are brought together in the pharmacy experience."
+            label={m.pharmacy.eyebrow}
+            title={m.pharmacy.title}
+            description={m.pharmacy.description}
           />
 
-          <div className="mt-7 grid grid-cols-2 gap-3 sm:mt-10 sm:gap-4 lg:grid-cols-4">
-            {pharmacyTools.map((item) => (
-              <div key={item.image} className="min-w-0">
-                <ScreenshotCard
-                  image={item.image}
-                  alt={`Medicine Finder ${item.title}`}
-                  compact
-                />
-                <h3 className="mt-2.5 text-xs font-semibold sm:mt-4 sm:text-sm">
-                  {item.title}
-                </h3>
-              </div>
+          <div className="mt-7 sm:mt-10">
+            <Gallery images={pharmacyImages} label={m.pharmacy.eyebrow} />
+          </div>
+
+          <div className="mt-4 grid gap-2.5 sm:mt-6 sm:grid-cols-2 sm:gap-3 lg:grid-cols-4">
+            {m.pharmacy.features.map((feature) => (
+              <FeatureCard
+                key={feature.title}
+                title={feature.title}
+                description={feature.description}
+              />
             ))}
           </div>
         </div>
       </section>
 
-      {/* LEARNING & QUIZZES */}
+      {/* LEARNING */}
       <section id="learning" className={sectionClass}>
         <div className={containerClass}>
-          <div className="grid gap-3 md:grid-cols-[1.2fr_0.8fr] md:items-end md:gap-8">
-            <SectionHeading
-              label="Learning & quizzes"
-              title="Learning content built into the platform."
-            />
-            <p className={bodyClass}>
-              Courses, books, blogs and quizzes are managed through the
-              administration system and made available to users through their
-              platform experience.
-            </p>
+          <SectionHeading
+            label={m.learning.eyebrow}
+            title={m.learning.title}
+            description={m.learning.description}
+          />
+
+          <div className="mt-7 sm:mt-10">
+            <Gallery images={learningImages} label={m.learning.eyebrow} />
           </div>
 
-          <div className="mt-7 grid grid-cols-2 gap-3 sm:mt-10 sm:gap-4 lg:grid-cols-4">
-            {learningItems.map((item) => (
-              <div key={item.image} className="group min-w-0">
-                <ScreenshotCard
-                  image={item.image}
-                  alt={`Medicine Finder ${item.title}`}
-                  compact
-                />
-                <h3 className="mt-2.5 text-xs font-semibold sm:mt-4 sm:text-sm">
-                  {item.title}
-                </h3>
-              </div>
+          <div className="mt-4 grid gap-2.5 sm:mt-6 sm:grid-cols-2 sm:gap-3 lg:grid-cols-4">
+            {m.learning.features.map((feature) => (
+              <FeatureCard
+                key={feature.title}
+                title={feature.title}
+                description={feature.description}
+              />
             ))}
-          </div>
-
-          <div className="mt-5 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4">
-            <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 dark:border-white/[0.07] dark:bg-white/[0.02] sm:rounded-3xl sm:p-6">
-              <p className={eyebrowClass}>Content management</p>
-              <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400 sm:mt-3 sm:leading-7">
-                Administration controls the learning content, including
-                courses, books, blogs and quiz material.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 dark:border-white/[0.07] dark:bg-white/[0.02] sm:rounded-3xl sm:p-6">
-              <p className={eyebrowClass}>Quiz participation</p>
-              <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400 sm:mt-3 sm:leading-7">
-                Quizzes support individual participation or sessions with up
-                to four people. Pharmacies can also invite other users to
-                participate.
-              </p>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* ADMIN CONTROL PANEL */}
+      {/* ADMINISTRATION */}
       <section id="administration" className={sectionClass}>
         <div className={containerClass}>
           <div className="grid items-center gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-8">
-            <div>
-              <SectionHeading
-                label="Administration"
-                title="One control center for the entire platform."
-                description="The administration system manages users, registrations, entities, subscriptions, learning content, translations, pages and other platform operations."
-              />
-            </div>
+            <SectionHeading
+              label={m.admin.eyebrow}
+              title={m.admin.title}
+              description={m.admin.description}
+            />
 
             <ScreenshotCard
               image="admin-dashboard.png"
-              alt="Medicine Finder administration dashboard"
+              alt={m.admin.title}
               width={1800}
               height={1100}
             />
           </div>
 
-          <div className="mt-5 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 lg:grid-cols-4">
-            {adminItems.map((item) => (
-              <div key={item.image} className="min-w-0">
-                <ScreenshotCard
-                  image={item.image}
-                  alt={`Medicine Finder ${item.title}`}
-                  width={1200}
-                  height={900}
-                  compact
-                />
-                <h3 className="mt-2.5 text-xs font-semibold sm:mt-4 sm:text-sm">
-                  {item.title}
-                </h3>
-                <p className="mt-1 text-[11px] leading-5 text-gray-500 sm:text-xs sm:leading-6 dark:text-gray-400">
-                  {item.text}
-                </p>
-              </div>
-            ))}
+          <div className="mt-5 sm:mt-8">
+            <Gallery
+              images={adminImages}
+              label={m.admin.eyebrow}
+              width={1200}
+              height={900}
+            />
           </div>
 
-          <div className="mt-5 rounded-2xl border border-blue-500/15 bg-blue-500/[0.04] p-4 sm:mt-8 sm:rounded-3xl sm:p-6">
-            <p className="mb-3 text-xs font-semibold text-gray-700 dark:text-gray-300">
-              Platform management modules
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {[
-                "Users",
-                "Registrations",
-                "Entities",
-                "Packages",
-                "Courses",
-                "Books",
-                "Blogs",
-                "Posters",
-                "Quizzes",
-                "Translations",
-                "Pages",
-                "AI Assistant",
-                "Analytics",
-              ].map((item) => (
-                <span
-                  key={item}
-                  className="rounded-full border border-black/10 bg-white/70 px-2.5 py-1 text-[10px] text-gray-600 dark:border-white/10 dark:bg-white/[0.04] dark:text-gray-400 sm:text-xs"
-                >
-                  {item}
-                </span>
-              ))}
-            </div>
+          <div className="mt-4 grid gap-2.5 sm:mt-6 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
+            {m.admin.features.map((feature) => (
+              <FeatureCard
+                key={feature.title}
+                title={feature.title}
+                description={feature.description}
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -775,19 +735,17 @@ export default function MedicineFinderPage() {
       <section id="security" className={sectionClass}>
         <div className={containerClass}>
           <div className="grid gap-6 lg:grid-cols-[0.75fr_1.25fr] lg:gap-12">
-            <div>
-              <SectionHeading
-                label="Security & privacy"
-                title="Designed around controlled access and responsible data handling."
-                description="Medicine Finder handles different account types and communication flows, so access is separated according to each account's role and permissions."
-              />
-            </div>
+            <SectionHeading
+              label={m.security.eyebrow}
+              title={m.security.title}
+              description={m.security.description}
+            />
 
             <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-              {securityItems.map((item) => (
+              {m.security.principles.map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 dark:border-white/[0.07] dark:bg-white/[0.02] sm:rounded-3xl sm:p-6"
+                  className="min-w-0 rounded-2xl border border-black/10 bg-black/[0.02] p-4 dark:border-white/[0.07] dark:bg-white/[0.02] sm:rounded-3xl sm:p-6"
                 >
                   <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-blue-500/20 bg-blue-500/[0.06] text-blue-500 sm:h-10 sm:w-10">
                     <svg
@@ -808,37 +766,37 @@ export default function MedicineFinderPage() {
                     {item.title}
                   </h3>
                   <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400 sm:leading-7">
-                    {item.text}
+                    {item.description}
                   </p>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="mt-5 rounded-2xl border border-black/10 bg-black/[0.02] p-4 dark:border-white/[0.07] dark:bg-white/[0.02] sm:mt-8 sm:rounded-3xl sm:p-8">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-              <div>
-                <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                  Healthcare platform — not medical advice
-                </p>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-500 dark:text-gray-400 sm:leading-7">
-                  Medicine Finder is a directory and communication platform.
-                  It does not diagnose, prescribe, dispense or provide clinical
-                  treatment recommendations. AI-assisted prescription reading
-                  is intended to support authorized pharmacists, not replace
-                  their professional judgment.
-                </p>
-              </div>
-
-              <a
-                href="https://medicine-finder.com"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex w-fit shrink-0 items-center justify-center rounded-full border border-black/10 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-black/[0.04] dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/[0.05] sm:px-5 sm:py-3"
+          <div className="mt-5 flex items-start gap-3 rounded-2xl border border-black/10 bg-black/[0.02] p-4 dark:border-white/[0.07] dark:bg-white/[0.02] sm:mt-8 sm:gap-4 sm:rounded-3xl sm:p-8">
+            <span
+              aria-hidden="true"
+              className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-blue-500"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                className="h-4 w-4"
               >
-                View platform
-              </a>
-            </div>
+                <circle cx="12" cy="12" r="9" />
+                <path
+                  d="M12 8h.01M11 12h1v4h1"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+
+            <p className="min-w-0 text-sm leading-6 text-gray-500 dark:text-gray-400 sm:leading-7">
+              {m.security.disclaimer}
+            </p>
           </div>
         </div>
       </section>
@@ -848,25 +806,20 @@ export default function MedicineFinderPage() {
         <div className={containerClass}>
           <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 dark:border-white/[0.07] dark:bg-white/[0.02] sm:rounded-[2.5rem] sm:p-8 lg:p-12">
             <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-10">
-              <div>
-                <SectionHeading
-                  label="Technology"
-                  title="Built as a connected digital platform."
-                  description="The platform combines mobile experiences, role-based access, administration tools, communication, subscriptions and AI-assisted functionality."
-                />
-              </div>
+              <SectionHeading
+                label={m.technology.eyebrow}
+                title={m.technology.title}
+                description={m.technology.description}
+              />
 
               <div className="grid gap-2.5 sm:grid-cols-2 sm:gap-3">
-                {platformCapabilities.map(([title, text]) => (
-                  <div
-                    key={title}
-                    className="rounded-xl border border-black/10 bg-white p-3.5 dark:border-white/[0.07] dark:bg-[#090d14] sm:rounded-2xl sm:p-5"
-                  >
-                    <p className="text-sm font-semibold">{title}</p>
-                    <p className="mt-1.5 text-xs leading-5 text-gray-500 sm:mt-2 sm:leading-6 dark:text-gray-400">
-                      {text}
-                    </p>
-                  </div>
+                {m.technology.items.map((item) => (
+                  <FeatureCard
+                    key={item.title}
+                    title={item.title}
+                    description={item.description}
+                    className="bg-white dark:bg-[#090d14]"
+                  />
                 ))}
               </div>
             </div>
@@ -874,46 +827,43 @@ export default function MedicineFinderPage() {
         </div>
       </section>
 
-      {/* CTA */}
+      {/* CLOSING CTA */}
       <section className="border-t border-black/10 dark:border-white/[0.06]">
         <div className="mx-auto max-w-7xl px-4 py-14 text-center sm:px-6 sm:py-20 lg:px-8 lg:py-28">
           <p className={eyebrowClass}>Medicine Finder</p>
 
           <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-semibold tracking-[-0.045em] sm:mt-5 sm:text-4xl lg:text-5xl">
-            A practical digital platform for connecting people and pharmacies.
+            {m.closing.title}
           </h2>
 
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-gray-500 dark:text-gray-400 sm:mt-5 sm:leading-7">
-            Explore the live product and see how Medicine Finder brings
-            pharmacy discovery, medication requests, communication and
-            pharmacy-focused AI together.
+            {m.closing.description}
           </p>
 
           <div className="mt-6 flex flex-wrap justify-center gap-2.5 sm:mt-8 sm:gap-3">
             <a
-              href="https://apps.apple.com/us/app/medicine-finder/id6771959046"
+              href={WEBSITE_URL}
               target="_blank"
               rel="noreferrer"
-              className="rounded-full bg-gray-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200 sm:px-6 sm:py-3"
+              //   className="rounded-full bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200 sm:px-6 sm:py-3"
+              className="rounded-full bg-blue-600 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-blue-500 sm:px-7 sm:py-3.5"
             >
-              Open on App Store
-            </a>
-
-            <a
-              href="https://medicine-finder.com"
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-full border border-black/10 px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-black/[0.04] dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/[0.05] sm:px-6 sm:py-3"
-            >
-              Visit website
+              {m.closing.explore}
             </a>
           </div>
 
           <Link
             href="/#products"
-            className="mt-5 inline-flex text-sm text-gray-500 underline-offset-4 transition hover:text-blue-500 hover:underline sm:mt-7"
+            className="mt-5 inline-flex items-center gap-2 text-sm text-gray-500 underline-offset-4 transition hover:text-blue-500 hover:underline sm:mt-7"
           >
-            ← Back to all projects
+            {/* rotate-180 gives ←, and rtl:-scale-x-100 turns it into → in RTL */}
+            <span
+              aria-hidden="true"
+              className="inline-block rotate-180 rtl:-scale-x-100"
+            >
+              →
+            </span>
+            {m.closing.back}
           </Link>
         </div>
       </section>

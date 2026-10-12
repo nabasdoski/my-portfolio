@@ -1,9 +1,15 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "@/components/useTranslations";
+import { useLanguage } from "@/components/LanguageProvider";
 
 export default function ContactForm() {
+  const t = useTranslations();
+  const form = t.form;
+
+  const { direction } = useLanguage();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
@@ -33,12 +39,11 @@ export default function ContactForm() {
     setStatusType("");
   }
 
-  async function handleSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     clearStatus();
 
+    // Honeypot: silently ignore submissions that fill this hidden field.
     if (website.trim()) {
       setWebsite("");
       return;
@@ -61,25 +66,19 @@ export default function ContactForm() {
         }),
       });
 
-      const result = await response.json();
+    
 
       if (!response.ok) {
         const isRateLimited = response.status === 429;
 
         setStatusType(isRateLimited ? "warning" : "error");
-        setStatus(
-          isRateLimited
-            ? "You've sent several messages in a short time. Please wait one minute before trying again."
-            : result.error ||
-                "Your message could not be sent. Please try again."
-        );
+               setStatus(isRateLimited ? form.rateLimited : form.genericError);
         return;
       }
 
       setStatusType("success");
-      setStatus(
-        "Thank you for reaching out! Your message has been received. I'll get back to you as soon as possible."
-      );
+      setStatus(form.success);
+
       setName("");
       setEmail("");
       setSubject("");
@@ -88,51 +87,52 @@ export default function ContactForm() {
     } catch (error) {
       console.error("Contact form error:", error);
       setStatusType("error");
-      setStatus(
-        "Something went wrong while sending your message. Please try again later."
-      );
+      setStatus(form.networkError);
     } finally {
       setLoading(false);
     }
   }
 
   const inputClass =
-    "mt-1.5 sm:mt-2 w-full rounded-xl border border-black/10 bg-white px-3.5 py-3 text-base sm:text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 dark:border-white/10 dark:bg-white/[0.04] dark:text-white";
+    "mt-1.5 sm:mt-2 w-full min-w-0 rounded-xl border border-black/10 bg-white px-3.5 py-3 text-base sm:text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 dark:border-white/10 dark:bg-white/[0.04] dark:text-white";
 
   const statusStyles = {
     success:
       "border-emerald-500/25 bg-emerald-500/[0.08] text-emerald-800 dark:text-emerald-300",
     warning:
       "border-amber-500/30 bg-amber-500/[0.09] text-amber-800 dark:text-amber-200",
-    error:
-      "border-red-500/25 bg-red-500/[0.07] text-red-800 dark:text-red-300",
+    error: "border-red-500/25 bg-red-500/[0.07] text-red-800 dark:text-red-300",
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-6 space-y-4 sm:mt-10 sm:space-y-5">
-      {/* Honeypot field for basic bot filtering */}
+    <form
+      onSubmit={handleSubmit}
+      dir={direction}
+           className="relative mt-6 w-full min-w-0 space-y-4 text-start sm:mt-10 sm:space-y-5"
+             >
+     
+            {/* Hidden honeypot field for basic bot filtering */}
       <div
         aria-hidden="true"
-        className="absolute left-[-10000px] h-px w-px overflow-hidden"
+        className="pointer-events-none absolute start-0 top-0 h-0 w-0 overflow-hidden opacity-0"
       >
-        <label htmlFor="contact-website">Leave this field empty</label>
+        <label htmlFor="contact-website">{form.honeypot}</label>
         <input
           id="contact-website"
           name="website"
           type="text"
           value={website}
-          onChange={(e) => setWebsite(e.target.value)}
+          onChange={(event) => setWebsite(event.target.value)}
           tabIndex={-1}
           autoComplete="off"
         />
       </div>
-
-      <div>
+      <div className="min-w-0">
         <label
           htmlFor="contact-name"
           className="text-sm font-medium text-gray-700 dark:text-gray-300"
         >
-          Your name
+          {form.name}
         </label>
         <input
           id="contact-name"
@@ -142,21 +142,21 @@ export default function ContactForm() {
           required
           maxLength={100}
           value={name}
-          onChange={(e) => {
-            setName(e.target.value);
+          onChange={(event) => {
+            setName(event.target.value);
             clearStatus();
           }}
-          className={inputClass}
-          placeholder="Enter your name"
+          className={`${inputClass} text-start`}
+          placeholder={form.namePlaceholder}
+          dir={direction}
         />
       </div>
-
-      <div>
+      <div className="min-w-0">
         <label
           htmlFor="contact-email"
           className="text-sm font-medium text-gray-700 dark:text-gray-300"
         >
-          Email address
+          {form.email}
         </label>
         <input
           id="contact-email"
@@ -166,21 +166,21 @@ export default function ContactForm() {
           required
           maxLength={254}
           value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
+          onChange={(event) => {
+            setEmail(event.target.value);
             clearStatus();
           }}
-          className={inputClass}
-          placeholder="you@example.com"
+          className={`${inputClass} text-start`}
+          placeholder={form.emailPlaceholder}
+          dir={direction}
         />
       </div>
-
-      <div>
+      <div className="min-w-0">
         <label
           htmlFor="contact-subject"
           className="text-sm font-medium text-gray-700 dark:text-gray-300"
         >
-          Subject (optional)
+          {form.subject}
         </label>
         <input
           id="contact-subject"
@@ -188,21 +188,21 @@ export default function ContactForm() {
           type="text"
           maxLength={150}
           value={subject}
-          onChange={(e) => {
-            setSubject(e.target.value);
+          onChange={(event) => {
+            setSubject(event.target.value);
             clearStatus();
           }}
-          className={inputClass}
-          placeholder="What would you like to discuss?"
+          className={`${inputClass} text-start`}
+          placeholder={form.subjectPlaceholder}
+          dir={direction}
         />
       </div>
-
-      <div>
+      <div className="min-w-0">
         <label
           htmlFor="contact-message"
           className="text-sm font-medium text-gray-700 dark:text-gray-300"
         >
-          Message
+          {form.message}
         </label>
         <textarea
           id="contact-message"
@@ -212,20 +212,20 @@ export default function ContactForm() {
           maxLength={5000}
           rows={4}
           value={message}
-          onChange={(e) => {
-            setMessage(e.target.value);
+          onChange={(event) => {
+            setMessage(event.target.value);
             clearStatus();
           }}
-          className={`${inputClass} resize-y`}
-          placeholder="Tell me about your idea or project..."
+          className={`${inputClass} text-start resize-y`}
+          placeholder={form.messagePlaceholder}
+          dir={direction}
         />
       </div>
-
       {status && statusType && (
         <div
           role={statusType === "error" ? "alert" : "status"}
           aria-live="polite"
-          className={`flex items-start gap-3 rounded-2xl border p-3 text-sm leading-6 shadow-sm sm:p-4 ${statusStyles[statusType]}`}
+          className={`flex min-w-0 items-start gap-3 rounded-2xl border p-3 text-sm leading-6 shadow-sm sm:p-4 ${statusStyles[statusType]}`}
         >
           <span
             aria-hidden="true"
@@ -282,24 +282,23 @@ export default function ContactForm() {
 
           <div className="min-w-0 flex-1">
             <p className="font-semibold">
-              {statusType === "success" && "Message sent successfully"}
-              {statusType === "warning" && "Please wait a moment"}
-              {statusType === "error" && "Message could not be sent"}
+              {statusType === "success" && form.successTitle}
+              {statusType === "warning" && form.warningTitle}
+              {statusType === "error" && form.errorTitle}
             </p>
             <p className="mt-0.5 break-words opacity-90">{status}</p>
           </div>
         </div>
       )}
-
       <button
         type="submit"
         disabled={loading}
-        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#256DD3] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1d5bb3] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex min-h-11 max-w-full items-center justify-center gap-2 rounded-full bg-[#256DD3] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1d5bb3] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
       >
         {loading ? (
           <>
             <svg
-              className="h-4 w-4 animate-spin"
+              className="h-4 w-4 shrink-0 animate-spin"
               viewBox="0 0 24 24"
               fill="none"
             >
@@ -317,10 +316,10 @@ export default function ContactForm() {
                 d="M4 12a8 8 0 0 1 8-8V0C5.4 0 0 5.4 0 12h4Z"
               />
             </svg>
-            Sending...
+            {form.sending}
           </>
         ) : (
-          "Send message"
+          form.send
         )}
       </button>
     </form>
