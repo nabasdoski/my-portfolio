@@ -1,17 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
 import { useTranslations, Arrow } from "@/components/useTranslations";
 import ProductCard from "@/components/ProductCard";
-import ThemeToggle from "@/components/ThemeToggle";
 import ContactForm from "@/components/ContactForm";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { SITE } from "@/lib/site";
+import SiteHeader from "@/components/SiteHeader";
 
 export default function Home() {
   const t = useTranslations();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
     { label: t.nav.products, href: "#products" },
@@ -19,114 +15,15 @@ export default function Home() {
     { label: t.nav.contact, href: "#contact" },
   ];
 
+
   return (
-    <main className="min-h-screen overflow-x-clip bg-white text-gray-900 dark:bg-[#050b14] dark:text-white">
-      {/* NAVBAR */}
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-black/10 bg-white/90 backdrop-blur-xl dark:border-white/[0.06] dark:bg-[#050b14]/90">
-        <nav className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-2 px-3 sm:gap-4 sm:px-6 lg:h-20 lg:px-8">
-          <Link href="/" className="group flex shrink-0 items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 font-bold text-white shadow-lg shadow-blue-600/20">
-              N
-            </div>
-
-            <span className="text-lg font-semibold tracking-tight text-gray-900 dark:text-white">
-              Nabaz<span className="text-blue-500">.</span>
-            </span>
-          </Link>
-
-          {/* Desktop navigation */}
-          <div className="hidden items-center gap-10 md:flex">
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="text-sm text-gray-600 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-              >
-                {item.label}
-              </a>
-            ))}
-          </div>
-
-          {/* Actions */}
-          <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
-            {/* Desktop contact button */}
-            <a
-              href="#contact"
-              className="hidden rounded-full border border-black/10 bg-black/[0.03] px-5 py-2.5 text-sm font-medium text-gray-800 transition hover:border-blue-500/40 hover:bg-blue-500/10 dark:border-white/10 dark:bg-white/[0.04] dark:text-white md:inline-flex"
-            >
-              {t.nav.letsTalk}
-            </a>
-
-            {/* Language and theme controls */}
-            <LanguageSwitcher />
-            <ThemeToggle />
-
-            {/* Mobile menu button */}
-            <button
-              type="button"
-              aria-label={mobileMenuOpen ? t.nav.closeMenu : t.nav.openMenu}
-              aria-controls="mobile-navigation"
-              aria-expanded={mobileMenuOpen}
-              onClick={() => setMobileMenuOpen((open) => !open)}
-              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-black/10 bg-black/[0.03] text-gray-800 transition hover:border-blue-500/40 dark:border-white/10 dark:bg-white/[0.04] dark:text-white md:hidden"
-            >
-              {mobileMenuOpen ? (
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  className="h-5 w-5"
-                  aria-hidden="true"
-                >
-                  <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
-                </svg>
-              ) : (
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  className="h-5 w-5"
-                  aria-hidden="true"
-                >
-                  <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
-                </svg>
-              )}
-            </button>
-          </div>
-        </nav>
-
-        {/* Mobile navigation */}
-        {mobileMenuOpen && (
-          <div
-            id="mobile-navigation"
-            className="border-t border-black/10 bg-white/95 px-4 py-3 shadow-xl backdrop-blur-xl dark:border-white/[0.06] dark:bg-[#050b14]/95 md:hidden"
-          >
-            <nav className="mx-auto flex max-w-7xl flex-col gap-1">
-              {navItems.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-black/[0.04] hover:text-blue-500 dark:text-gray-300 dark:hover:bg-white/[0.05] dark:hover:text-blue-400"
-                >
-                  {item.label}
-                </a>
-              ))}
-
-              <a
-                href="#contact"
-                onClick={() => setMobileMenuOpen(false)}
-                className="mt-1 rounded-xl bg-blue-600 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-blue-500"
-              >
-                {t.nav.letsTalk}
-              </a>
-            </nav>
-          </div>
-        )}
-      </header>
-
+    <>
+      <SiteHeader
+        links={navItems}
+        cta={{ label: t.nav.letsTalk, href: "#contact" }}
+      />
+      <main className="min-h-screen overflow-x-clip bg-background text-foreground">
+      
       {/* HERO */}
       <section className="relative overflow-hidden pt-16 lg:pt-20">
         <div className="pointer-events-none absolute left-1/2 top-0 h-[450px] w-[700px] -translate-x-1/2 rounded-full bg-blue-600/[0.08] blur-[120px] sm:h-[600px] sm:w-[900px] sm:blur-[140px]" />
@@ -142,7 +39,9 @@ export default function Home() {
 
             <h1 className="max-w-5xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-gray-900 sm:text-6xl lg:text-8xl dark:text-white">
               {t.hero.title1}
-              <span className="block text-gray-500">{t.hero.title2}</span>
+              <span className="block text-gray-500">
+                {t.hero.title2}
+              </span>
               <span className="block bg-gradient-to-r from-blue-400 via-blue-500 to-cyan-400 bg-clip-text text-transparent">
                 {t.hero.title3}
               </span>
@@ -346,25 +245,25 @@ export default function Home() {
                 </a>
 
                 {SITE.linkedin && (
-                  <a
-                    href={SITE.linkedin}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group rounded-3xl border border-black/10 bg-black/[0.02] p-4 transition hover:-translate-y-1 hover:border-blue-500/30 dark:border-white/[0.07] dark:bg-white/[0.02] sm:p-6"
-                  >
-                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-blue-500">
-                      {t.contact.linkedinLabel}
-                    </p>
+                <a
+                  href={SITE.linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group rounded-3xl border border-black/10 bg-black/[0.02] p-4 transition hover:-translate-y-1 hover:border-blue-500/30 dark:border-white/[0.07] dark:bg-white/[0.02] sm:p-6"
+                >
+                  <p className="text-xs font-medium uppercase tracking-[0.2em] text-blue-500">
+                    {t.contact.linkedinLabel}
+                  </p>
 
-                    <p className="mt-3 text-sm font-medium text-gray-900 dark:text-white">
-                      {t.contact.linkedinTitle}
-                    </p>
+                  <p className="mt-3 text-sm font-medium text-gray-900 dark:text-white">
+                    {t.contact.linkedinTitle}
+                  </p>
 
-                    <span className="mt-4 inline-flex items-center gap-2 text-sm text-gray-500 transition group-hover:text-blue-500 sm:mt-5">
-                      {t.contact.linkedinCta}
-                      <Arrow className="group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
-                    </span>
-                  </a>
+                  <span className="mt-4 inline-flex items-center gap-2 text-sm text-gray-500 transition group-hover:text-blue-500 sm:mt-5">
+                    {t.contact.linkedinCta}
+                    <Arrow className="group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+                  </span>
+                </a>
                 )}
               </div>
             </div>
@@ -372,5 +271,6 @@ export default function Home() {
         </div>
       </section>
     </main>
+    </>
   );
 }

@@ -4,8 +4,9 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
-  useState,
+  useLayoutEffect,
+  useMemo,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 
@@ -22,57 +23,114 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
 );
 
 const LANGUAGE_STORAGE_KEY = "portfolio-language";
+const DEFAULT_LANGUAGE: Language = "en";
+
+function isLanguage(value: unknown): value is Language {
+  return value === "en" || value === "ku" || value === "ar";
+}
 
 function getDirection(language: Language): "ltr" | "rtl" {
   return language === "en" ? "ltr" : "rtl";
 }
+
+/* ------------------------------------------------------------------ *
+ * A tiny external store backed by localStorage.
+ * React reads the saved language through useSyncExternalStore, so no
+ * setState call is needed inside an effect.
+ * ------------------------------------------------------------------ */
+
+const listeners = new Set<() => void>();
+
+// Used when localStorage is unavailable (for example some private modes),
+// so switching language still works for the current visit.
+let memoryLanguage: Language | null = null;
+
+function subscribe(onChange: () => void) {
+  listeners.add(onChange);
+
+  // Keep several open tabs in sync.
+  function onStorage(event: StorageEvent) {
+    if (event.key === null || event.key === LANGUAGE_STORAGE_KEY) {
+      memoryLanguage = null;
+      onChange();
+    }
+  }
+
+  window.addEventListener("storage", onStorage);
+
+  return () => {
+    listeners.delete(onChange);
+    window.removeEventListener("storage", onStorage);
+  };
+}
+
+function getSnapshot(): Language {
+  if (memoryLanguage) return memoryLanguage;
+
+  try {
+    const saved = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+
+    if (isLanguage(saved)) return saved;
+  } catch {
+    // Fall back to English if browser storage is unavailable.
+  }
+
+  return DEFAULT_LANGUAGE;
+}
+
+function getServerSnapshot(): Language {
+  return DEFAULT_LANGUAGE;
+}
+
+const subscribeNever = () => () => {};
 
 export default function LanguageProvider({
   children,
 }: {
   children: ReactNode;
 }) {
-  const [language, setLanguageState] = useState<Language>("en");
-  const [isReady, setIsReady] = useState(false);
+  const language = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
+  );
+
+  // false while server-rendering and hydrating, true afterwards. The page
+  // stays hidden until the saved language is applied, so visitors never
+  // see a flash of English or of the wrong text direction.
+  const isReady = useSyncExternalStore(
+    subscribeNever,
+    () => true,
+    () => false,
+  );
 
   const direction = getDirection(language);
 
-  useEffect(() => {
-    let savedLanguage: Language = "en";
-
-    try {
-      const saved = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
-
-      if (saved === "en" || saved === "ku" || saved === "ar") {
-        savedLanguage = saved;
-      }
-    } catch {
-      // Continue using English if browser storage is unavailable.
-    }
-
-    // Apply the saved language and direction before showing the page.
-    document.documentElement.lang = savedLanguage;
-    document.documentElement.dir = getDirection(savedLanguage);
-
-    setLanguageState(savedLanguage);
-    setIsReady(true);
-  }, []);
+  // Keep <html lang dir> in sync before the browser paints.
+  useLayoutEffect(() => {
+    document.documentElement.lang = language;
+    document.documentElement.dir = direction;
+  }, [language, direction]);
 
   const setLanguage = useCallback((nextLanguage: Language) => {
-    setLanguageState(nextLanguage);
-
-    document.documentElement.lang = nextLanguage;
-    document.documentElement.dir = getDirection(nextLanguage);
+    memoryLanguage = nextLanguage;
 
     try {
       window.localStorage.setItem(LANGUAGE_STORAGE_KEY, nextLanguage);
     } catch {
       // Language switching still works if storage is unavailable.
     }
+
+    listeners.forEach((listener) => listener());
   }, []);
 
+  const value = useMemo(
+    () => ({ language, setLanguage, direction }),
+    [language, setLanguage, direction],
+  );
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, direction }}>
+    <LanguageContext.Provider value={value}>
       <div style={{ visibility: isReady ? "visible" : "hidden" }}>
         {children}
       </div>

@@ -3,8 +3,11 @@
  * Fill in the TODO values; empty strings hide the related UI/metadata.
  */
 export const SITE = {
-  // TODO: put your full name here (e.g. "Nabaz Ahmed")
+  // TODO: put your full name here (e.g. "Nabaz Doski"). Used in titles,
+  // metadata and the footer.
   name: "Nabaz",
+  // Short name shown in the header logo (keep it short for mobile).
+  brand: "Nabaz",
   // TODO: your real job title
   role: "Software Developer",
   description:
@@ -14,12 +17,16 @@ export const SITE = {
   email: "Nabaz@akuzzle.com", // TODO: consider a personal-domain address
   linkedin: "", // TODO: full profile URL, e.g. https://www.linkedin.com/in/your-handle
   github: "", // TODO: https://github.com/your-handle (optional)
+  // Year shown in the footer copyright (kept static on purpose).
+  since: 2026,
 } as {
   name: string;
+  brand: string;
   role: string;
   description: string;
   url: string;
   email: string;
   linkedin: string;
   github: string;
+  since: number;
 };

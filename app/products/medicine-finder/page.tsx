@@ -1,12 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import ThemeToggle from "@/components/ThemeToggle";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/components/LanguageProvider";
 import { useTranslations } from "@/components/useTranslations";
+import SiteHeader from "@/components/SiteHeader";
 
 const screenshots = "/images/medicine-finder/";
 
@@ -28,9 +26,6 @@ const headingClass =
 
 const bodyClass =
   "text-sm leading-6 text-gray-500 sm:leading-7 dark:text-gray-400";
-
-const navLinkClass =
-  "text-sm text-gray-500 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-white";
 
 const pillLinkClass =
   "rounded-full border border-black/10 px-4 py-2 text-xs font-medium text-gray-700 transition hover:bg-black/[0.04] dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/[0.05] sm:text-sm";
@@ -192,13 +187,11 @@ function FeatureCard({
 }
 
 export default function MedicineFinderPage() {
-  const [menuOpen, setMenuOpen] = useState(false);
 
   const { direction } = useLanguage();
   const t = useTranslations();
   const m = t.medicineFinder;
 
-  const closeMenu = () => setMenuOpen(false);
 
   // medicineFinder.nav has no "projects" or "technology" keys, so those two
   // labels are borrowed from existing entries.
@@ -216,98 +209,24 @@ export default function MedicineFinderPage() {
     { label: m.technology.eyebrow, href: "#technology" },
   ];
 
+  const navLinks = [
+    { label: t.akuzzle.nav.projects, href: "/#products" },
+    { label: m.nav.overview, href: "#overview" },
+    { label: m.technology.eyebrow, href: "#technology" },
+  ];
+
   return (
-    <main
+    <>
+      <SiteHeader
+        links={navLinks}
+        mobileLinks={mobileLinks}
+        cta={{ label: t.nav.letsTalk, href: "/#contact" }}
+      />
+      <main
       dir={direction}
-      className="min-h-screen overflow-x-clip bg-white text-gray-900 dark:bg-[#05070b] dark:text-white"
+      className="min-h-screen overflow-x-clip bg-background text-foreground"
     >
-      {/* NAVBAR */}
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-black/10 bg-white/90 backdrop-blur-xl dark:border-white/[0.06] dark:bg-[#05070b]/90">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:h-20 sm:px-6 lg:px-8">
-          <Link
-            href="/"
-            onClick={closeMenu}
-            className="shrink-0 text-sm font-semibold tracking-[0.18em] text-gray-900 dark:text-white"
-          >
-            NABAZ
-          </Link>
-
-          <nav className="hidden items-center gap-4 md:flex lg:gap-6">
-            <Link href="/#products" className={navLinkClass}>
-              {t.akuzzle.nav.projects}
-            </Link>
-            <a href="#overview" className={navLinkClass}>
-              {m.nav.overview}
-            </a>
-            <a href="#how-it-works" className={navLinkClass}>
-              {m.nav.howItWorks}
-            </a>
-            <a href="#technology" className={navLinkClass}>
-              {m.technology.eyebrow}
-            </a>
-            <LanguageSwitcher />
-            <ThemeToggle />
-          </nav>
-
-          <div className="flex shrink-0 items-center gap-2 md:hidden">
-            <LanguageSwitcher />
-            <ThemeToggle />
-            <button
-              type="button"
-              onClick={() => setMenuOpen((open) => !open)}
-              aria-label={menuOpen ? m.nav.closeMenu : m.nav.openMenu}
-              aria-expanded={menuOpen}
-              aria-controls="mobile-navigation"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-black/10 text-gray-800 transition hover:bg-black/[0.04] dark:border-white/10 dark:text-white dark:hover:bg-white/[0.06]"
-            >
-              {menuOpen ? (
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  className="h-5 w-5"
-                  aria-hidden="true"
-                >
-                  <path d="m6 6 12 12M18 6 6 18" />
-                </svg>
-              ) : (
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  className="h-5 w-5"
-                  aria-hidden="true"
-                >
-                  <path d="M4 7h16M4 12h16M4 17h16" />
-                </svg>
-              )}
-            </button>
-          </div>
-        </div>
-
-        {menuOpen && (
-          <nav
-            id="mobile-navigation"
-            className="border-t border-black/10 bg-white px-4 py-3 dark:border-white/[0.08] dark:bg-[#080c13] md:hidden"
-          >
-            <div className="mx-auto flex max-w-7xl flex-col">
-              {mobileLinks.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={closeMenu}
-                  className="rounded-lg px-3 py-2.5 text-sm text-gray-600 transition hover:bg-black/[0.04] hover:text-gray-950 dark:text-gray-300 dark:hover:bg-white/[0.05] dark:hover:text-white"
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
-          </nav>
-        )}
-      </header>
-
+      
       {/* HERO */}
       <section className="relative overflow-hidden pt-24 sm:pt-28">
         <div className="pointer-events-none absolute left-1/2 top-0 h-[300px] w-[400px] -translate-x-1/2 rounded-full bg-blue-500/[0.09] blur-3xl sm:h-[500px] sm:w-[700px]" />
@@ -349,8 +268,7 @@ export default function MedicineFinderPage() {
               <div className="mt-6 flex flex-wrap gap-2.5 sm:mt-9 sm:gap-3">
                 <a
                   href="#overview"
-                  className="rounded-full bg-blue-600 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-blue-500 sm:px-7 sm:py-3.5"
-                >
+               className="rounded-full bg-blue-600 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-blue-500 sm:px-7 sm:py-3.5" >
                   {m.hero.explore}
                 </a>
 
@@ -845,8 +763,8 @@ export default function MedicineFinderPage() {
               href={WEBSITE_URL}
               target="_blank"
               rel="noreferrer"
-              //   className="rounded-full bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200 sm:px-6 sm:py-3"
-              className="rounded-full bg-blue-600 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-blue-500 sm:px-7 sm:py-3.5"
+           //   className="rounded-full bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200 sm:px-6 sm:py-3"
+            className="rounded-full bg-blue-600 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-blue-500 sm:px-7 sm:py-3.5"
             >
               {m.closing.explore}
             </a>
@@ -868,5 +786,6 @@ export default function MedicineFinderPage() {
         </div>
       </section>
     </main>
+    </>
   );
 }

@@ -1,13 +1,13 @@
+
 "use client";
 
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import ThemeToggle from "@/components/ThemeToggle";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ProductScreenshots from "@/components/ProductScreenshots";
 import { useTranslations } from "@/components/useTranslations";
 import { useLanguage } from "@/components/LanguageProvider";
+import SiteHeader from "@/components/SiteHeader";
 
 const technologies = ["React Native", "Expo", "Node.js", "PostgreSQL", "AI"];
 
@@ -53,14 +53,12 @@ function CapabilityCard({
 }
 
 export default function AkuzzlePage() {
-  const [menuOpen, setMenuOpen] = useState(false);
 
   const t = useTranslations();
   const { language } = useLanguage();
   const isRtl = language === "ar" || language === "ku";
   const a = t.akuzzle;
 
-  const closeMenu = () => setMenuOpen(false);
 
   const mobileLinks = [
     { label: a.nav.overview, href: "#overview" },
@@ -70,97 +68,24 @@ export default function AkuzzlePage() {
     { label: a.nav.projects, href: "/#products" },
   ];
 
+  const navLinks = [
+    { label: a.nav.overview, href: "#overview" },
+    { label: a.nav.technology, href: "#technology" },
+    { label: a.nav.projects, href: "/#products" },
+  ];
+
   return (
-    <main
+    <>
+      <SiteHeader
+        links={navLinks}
+        mobileLinks={mobileLinks}
+        cta={{ label: t.nav.letsTalk, href: "/#contact" }}
+      />
+      <main
       dir={isRtl ? "rtl" : "ltr"}
-      className="min-h-screen overflow-x-clip bg-white text-gray-900 dark:bg-[#050b12] dark:text-white"
+      className="min-h-screen overflow-x-clip bg-background text-foreground"
     >
-      {/* Navigation */}
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-black/10 bg-white/90 backdrop-blur-xl dark:border-white/[0.06] dark:bg-[#050b12]/90">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:h-20 sm:px-6 lg:px-8">
-          <Link
-            href="/"
-            onClick={closeMenu}
-            className="shrink-0 text-sm font-semibold tracking-[0.18em] text-gray-900 dark:text-white"
-          >
-            NABAZ
-          </Link>
-
-          <div className="flex shrink-0 items-center gap-2 sm:gap-5">
-            <nav className="hidden items-center gap-5 sm:flex">
-              <a
-                href="#overview"
-                className="text-sm text-gray-600 transition hover:text-blue-500 dark:text-gray-400 dark:hover:text-white"
-              >
-                {a.nav.overview}
-              </a>
-              <a
-                href="#technology"
-                className="text-sm text-gray-600 transition hover:text-blue-500 dark:text-gray-400 dark:hover:text-white"
-              >
-                {a.nav.technology}
-              </a>
-              <Link
-                href="/#products"
-                className="text-sm text-gray-600 transition hover:text-blue-500 dark:text-gray-400 dark:hover:text-white"
-              >
-                {a.nav.projects}
-              </Link>
-            </nav>
-
-            <LanguageSwitcher />
-            <ThemeToggle />
-
-            <button
-              type="button"
-              aria-label={menuOpen ? a.nav.closeMenu : a.nav.openMenu}
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((open) => !open)}
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-black/10 text-gray-700 sm:hidden dark:border-white/10 dark:text-white"
-            >
-              {menuOpen ? (
-                <svg
-                  viewBox="0 0 24 24"
-                  className="h-5 w-5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  aria-hidden="true"
-                >
-                  <path d="m6 6 12 12M18 6 6 18" />
-                </svg>
-              ) : (
-                <svg
-                  viewBox="0 0 24 24"
-                  className="h-5 w-5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  aria-hidden="true"
-                >
-                  <path d="M4 7h16M4 12h16M4 17h16" />
-                </svg>
-              )}
-            </button>
-          </div>
-        </div>
-
-        {menuOpen && (
-          <nav className="border-t border-black/10 bg-white px-4 py-3 sm:hidden dark:border-white/[0.08] dark:bg-[#050b12]">
-            {mobileLinks.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={closeMenu}
-                className="block rounded-xl px-3 py-3 text-start text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/[0.05]"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        )}
-      </header>
-
+      
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-black/10 dark:border-white/[0.06]">
         <div className="pointer-events-none absolute inset-0">
@@ -216,8 +141,7 @@ export default function AkuzzlePage() {
               <div className="mt-6 flex flex-col gap-2.5 sm:mt-9 sm:flex-row sm:flex-wrap sm:gap-3">
                 <a
                   href="#overview"
-                  className="rounded-full bg-blue-600 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-blue-500 sm:px-7 sm:py-3.5"
-                >
+                className="rounded-full bg-blue-600 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-blue-500 sm:px-7 sm:py-3.5" >
                   {a.hero.explore}
                 </a>
                 <a
@@ -292,7 +216,9 @@ export default function AkuzzlePage() {
                 key={item.label}
                 className={`border-black/10 px-3 py-4 sm:px-6 sm:py-6 dark:border-white/[0.06] ${
                   index < 2 ? "border-b lg:border-b-0" : ""
-                } ${index % 2 === 0 ? "border-e" : ""} lg:border-e ${
+                } ${
+                  index % 2 === 0 ? "border-e" : ""
+                } lg:border-e ${
                   index === 3 ? "lg:border-e-0" : ""
                 }`}
               >
@@ -389,9 +315,7 @@ export default function AkuzzlePage() {
                 <Eyebrow>{a.challenge.eyebrow}</Eyebrow>
               </div>
               <h2 className={headingClass}>{a.challenge.title}</h2>
-              <div
-                className={`mt-4 space-y-4 sm:mt-7 sm:space-y-5 ${bodyClass}`}
-              >
+              <div className={`mt-4 space-y-4 sm:mt-7 sm:space-y-5 ${bodyClass}`}>
                 {a.challenge.paragraphs.map((paragraph, index) => (
                   <p key={index}>{paragraph}</p>
                 ))}
@@ -407,9 +331,7 @@ export default function AkuzzlePage() {
                 <Eyebrow>{a.solution.eyebrow}</Eyebrow>
               </div>
               <h2 className={headingClass}>{a.solution.title}</h2>
-              <div
-                className={`mt-4 space-y-4 sm:mt-7 sm:space-y-5 ${bodyClass}`}
-              >
+              <div className={`mt-4 space-y-4 sm:mt-7 sm:space-y-5 ${bodyClass}`}>
                 {a.solution.paragraphs.map((paragraph, index) => (
                   <p key={index}>{paragraph}</p>
                 ))}
@@ -648,10 +570,7 @@ export default function AkuzzlePage() {
                 </p>
                 <div className="mt-4 flex flex-col gap-2 sm:mt-8 sm:flex-row sm:items-center sm:gap-3">
                   {a.technology.flowItems.map((item, index) => (
-                    <div
-                      key={item}
-                      className="flex min-w-0 flex-1 items-center gap-3"
-                    >
+                    <div key={item} className="flex min-w-0 flex-1 items-center gap-3">
                       <div className="flex-1 rounded-xl border border-black/10 bg-white px-3 py-3 text-center text-sm font-medium text-gray-700 sm:rounded-2xl sm:px-5 sm:py-4 dark:border-white/[0.08] dark:bg-[#0a1422] dark:text-gray-300">
                         {item}
                       </div>
@@ -720,5 +639,6 @@ export default function AkuzzlePage() {
         </div>
       </section>
     </main>
+    </>
   );
 }
