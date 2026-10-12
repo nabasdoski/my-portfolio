@@ -50,8 +50,13 @@ async function notifyByEmail({ name, email, subject, message }: ContactMessage) 
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.CONTACT_NOTIFY_TO;
 
-  // Not configured: skip quietly. The message is still in Supabase.
-  if (!apiKey || !to) return;
+   // Not configured: skip, but leave a trace in the logs.
+  if (!apiKey || !to) {
+    console.warn(
+      "Email alert skipped: RESEND_API_KEY or CONTACT_NOTIFY_TO is missing.",
+    );
+    return;
+  }
 
   const from =
     process.env.CONTACT_NOTIFY_FROM ?? "Portfolio <onboarding@resend.dev>";
@@ -77,8 +82,12 @@ async function notifyByEmail({ name, email, subject, message }: ContactMessage) 
       signal: AbortSignal.timeout(8000),
     });
 
-    if (!response.ok) {
-      console.error("Contact notification failed:", response.status);
+        if (!response.ok) {
+      console.error(
+        "Contact notification failed:",
+        response.status,
+        await response.text(),
+      );
     }
   } catch (error) {
     console.error("Contact notification error:", error);
