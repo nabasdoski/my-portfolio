@@ -30,7 +30,12 @@ function getRatelimit() {
   return ratelimit;
 }
 
-function fail(code: string, error: string, status: number, headers?: HeadersInit) {
+function fail(
+  code: string,
+  error: string,
+  status: number,
+  headers?: HeadersInit,
+) {
   return NextResponse.json({ code, error }, { status, headers });
 }
 
@@ -46,11 +51,16 @@ type ContactMessage = {
  * It never throws: the message is already saved, so a failed email must
  * not turn a successful submission into an error for the visitor.
  */
-async function notifyByEmail({ name, email, subject, message }: ContactMessage) {
+async function notifyByEmail({
+  name,
+  email,
+  subject,
+  message,
+}: ContactMessage) {
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.CONTACT_NOTIFY_TO;
 
-   // Not configured: skip, but leave a trace in the logs.
+  // Not configured: skip, but leave a trace in the logs.
   if (!apiKey || !to) {
     console.warn(
       "Email alert skipped: RESEND_API_KEY or CONTACT_NOTIFY_TO is missing.",
@@ -82,7 +92,7 @@ async function notifyByEmail({ name, email, subject, message }: ContactMessage) 
       signal: AbortSignal.timeout(8000),
     });
 
-        if (!response.ok) {
+    if (!response.ok) {
       console.error(
         "Contact notification failed:",
         response.status,
@@ -152,9 +162,7 @@ export async function POST(request: Request) {
       typeof name !== "string" ||
       typeof email !== "string" ||
       typeof message !== "string" ||
-      (subject !== undefined &&
-        subject !== null &&
-        typeof subject !== "string")
+      (subject !== undefined && subject !== null && typeof subject !== "string")
     ) {
       return fail("invalid_form", "Invalid form data.", 400);
     }

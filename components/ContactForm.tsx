@@ -66,13 +66,11 @@ export default function ContactForm() {
         }),
       });
 
-    
-
       if (!response.ok) {
         const isRateLimited = response.status === 429;
 
         setStatusType(isRateLimited ? "warning" : "error");
-               setStatus(isRateLimited ? form.rateLimited : form.genericError);
+        setStatus(isRateLimited ? form.rateLimited : form.genericError);
         return;
       }
 
@@ -108,10 +106,9 @@ export default function ContactForm() {
     <form
       onSubmit={handleSubmit}
       dir={direction}
-           className="relative mt-6 w-full min-w-0 space-y-4 text-start sm:mt-10 sm:space-y-5"
-             >
-     
-            {/* Hidden honeypot field for basic bot filtering */}
+      className="relative mt-6 w-full min-w-0 space-y-4 text-start sm:mt-10 sm:space-y-5"
+    >
+      {/* Hidden honeypot field for basic bot filtering */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute start-0 top-0 h-0 w-0 overflow-hidden opacity-0"

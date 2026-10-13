@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -8,6 +8,37 @@ import { useTranslations } from "@/components/useTranslations";
 import { SITE } from "@/lib/site";
 
 export type NavLink = { label: string; href: string };
+
+/**
+ * Links to a section of the SAME page ("#contact") use a plain <a>, so the
+ * browser scrolls natively every time (smooth, with the header offset from
+ * globals.css). Links to other pages ("/#products", "/") use next/link.
+ */
+function NavAnchor({
+  href,
+  className,
+  onClick,
+  children,
+}: {
+  href: string;
+  className?: string;
+  onClick?: () => void;
+  children: ReactNode;
+}) {
+  if (href.startsWith("#")) {
+    return (
+      <a href={href} className={className} onClick={onClick}>
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <Link href={href} className={className} onClick={onClick}>
+      {children}
+    </Link>
+  );
+}
 
 type SiteHeaderProps = {
   /** Links shown in the desktop bar (keep it to about 3-4). */
@@ -71,21 +102,21 @@ export default function SiteHeader({
         {/* Desktop navigation */}
         <div className="hidden items-center gap-6 md:flex lg:gap-10">
           {links.map((item) => (
-            <Link key={item.href} href={item.href} className={desktopLinkClass}>
+            <NavAnchor key={item.href} href={item.href} className={desktopLinkClass}>
               {item.label}
-            </Link>
+            </NavAnchor>
           ))}
         </div>
 
         {/* Actions */}
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
           {cta && (
-            <Link
+            <NavAnchor
               href={cta.href}
               className="hidden rounded-full border border-black/10 bg-black/[0.03] px-5 py-2.5 text-sm font-medium text-gray-800 transition hover:border-blue-500/40 hover:bg-blue-500/10 dark:border-white/10 dark:bg-white/[0.04] dark:text-white lg:inline-flex"
             >
               {cta.label}
-            </Link>
+            </NavAnchor>
           )}
 
           <LanguageSwitcher />
@@ -128,24 +159,24 @@ export default function SiteHeader({
             className="mx-auto flex max-w-7xl flex-col gap-1"
           >
             {menuLinks.map((item) => (
-              <Link
+              <NavAnchor
                 key={item.href}
                 href={item.href}
                 onClick={closeMenu}
                 className={mobileLinkClass}
               >
                 {item.label}
-              </Link>
+              </NavAnchor>
             ))}
 
             {cta && (
-              <Link
+              <NavAnchor
                 href={cta.href}
                 onClick={closeMenu}
                 className="mt-1 rounded-xl bg-blue-600 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-blue-500"
               >
                 {cta.label}
-              </Link>
+              </NavAnchor>
             )}
           </nav>
         </div>

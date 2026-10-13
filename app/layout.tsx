@@ -58,9 +58,7 @@ const personJsonLd = {
   sameAs: [SITE.linkedin, SITE.github].filter(Boolean),
 };
 
-export default function RootLayout({
-  children,
-}: LayoutProps<"/">) {
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"

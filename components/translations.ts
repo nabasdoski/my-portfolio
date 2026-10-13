@@ -17,17 +17,17 @@ export const en = {
     closeMenu: "Close navigation menu",
   },
   hero: {
-    badge: "Software · AI · Digital Products",
+    badge: "Software · Digital Products",
     title1: "I build digital",
     title2: "products that",
     title3: "solve real problems.",
     intro:
-      "I design and develop practical software products combining modern engineering, artificial intelligence and secure digital experiences.",
+      "I design and develop practical software products for real users and markets, including features that use AI where it helps.",
     ctaProducts: "Explore my products",
     ctaAbout: "About me",
     stats: [
       { value: "02+", label: "Digital products" },
-      { value: "AI", label: "Built into products" },
+      { value: "AI", label: "Features in my products" },
       { value: "Iraq", label: "Primary market" },
     ],
   },
@@ -51,30 +51,31 @@ export const en = {
     eyebrow: "About me",
     heading: "I build digital products that solve real problems.",
     p1: "I am a software developer and technology professional focused on building practical digital products, intelligent systems, and technology solutions that can be used in the real world.",
-    p2: "My work combines software engineering with artificial intelligence, cybersecurity, data, and digital transformation. I enjoy taking an idea from a real problem to a working product — designing the system, building the software, and thinking about how people and businesses will actually use it.",
+    p2: "My work is centred on software engineering: taking an idea from a real problem to a working product, designing the system, building it, and thinking about how people and businesses will actually use it. Along the way I have added AI features to my products and become interested in how to make such systems secure.",
     p3: "I have worked across software development, information systems, international projects, and business operations. This combination has taught me to look beyond code and understand the wider problem a technology solution needs to solve.",
-    p4Before: "Today, I am particularly interested in the intersection of ",
-    p4Highlight: "AI, cybersecurity, and digital transformation",
-    p4After:
-      " — building technology that is useful, secure, and capable of growing beyond a single project or market.",
-    cards: [
-      {
-        title: "Software Engineering",
-        text: "Web, mobile and business applications",
-      },
-      {
-        title: "Artificial Intelligence",
-        text: "Practical AI features inside real products",
-      },
-      {
-        title: "Cybersecurity",
-        text: "Secure systems, access and data protection",
-      },
-      {
-        title: "Digital Transformation",
-        text: "Turning real-world processes into digital solutions",
-      },
-    ],
+
+p4Before: "Today, I want to deepen my knowledge at the intersection of ",
+p4Highlight: "AI and cybersecurity",
+p4After:
+  " — so I can build technology that is useful, secure, and able to grow beyond a single project or market.",
+cards: [
+  {
+    title: "Software Engineering",
+    text: "Web, mobile and business applications",
+  },
+  {
+    title: "AI Features",
+    text: "Using AI inside real products, and learning more",
+  },
+  {
+    title: "Security",
+    text: "Applying security basics and building deeper knowledge",
+  },
+  {
+    title: "Digital Transformation",
+    text: "Turning real-world processes into digital solutions",
+  },
+],
   },
   contact: {
     eyebrow: "Let's talk",
@@ -681,17 +682,17 @@ const ar: Copy = {
     closeMenu: "إغلاق قائمة التنقل",
   },
   hero: {
-    badge: "البرمجيات · الذكاء الاصطناعي · المنتجات الرقمية",
+    badge: "البرمجيات · المنتجات الرقمية",
     title1: "أبني منتجات",
     title2: "رقمية",
     title3: "تحل مشكلات حقيقية.",
     intro:
-      "أصمّم وأطوّر منتجات برمجية عملية تجمع بين الهندسة الحديثة والذكاء الاصطناعي والتجارب الرقمية الآمنة.",
+     "أصمّم وأطوّر منتجات برمجية عملية للمستخدمين والأسواق الحقيقية، تتضمن ميزات تستخدم الذكاء الاصطناعي حيث يفيد ذلك.",
     ctaProducts: "استكشف منتجاتي",
     ctaAbout: "نبذة عني",
     stats: [
       { value: "02+", label: "منتجات رقمية" },
-      { value: "AI", label: "مدمج في المنتجات" },
+      { value: "AI", label: "ميزات في منتجاتي" },
       { value: "العراق", label: "السوق الرئيسي" },
     ],
   },
@@ -715,30 +716,31 @@ const ar: Copy = {
     eyebrow: "نبذة عني",
     heading: "أبني منتجات رقمية تحل مشكلات حقيقية.",
     p1: "أنا مطوّر برمجيات ومتخصص في التقنية، أركّز على بناء منتجات رقمية عملية وأنظمة ذكية وحلول تقنية يمكن استخدامها في الواقع.",
-    p2: "يجمع عملي بين هندسة البرمجيات والذكاء الاصطناعي والأمن السيبراني والبيانات والتحول الرقمي. أستمتع بنقل الفكرة من مشكلة حقيقية إلى منتج يعمل — بتصميم النظام وبناء البرمجيات والتفكير في كيفية استخدام الأفراد والشركات له فعلًا.",
+    p2: "يتمحور عملي حول هندسة البرمجيات: نقل الفكرة من مشكلة حقيقية إلى منتج يعمل، بتصميم النظام وبنائه والتفكير في كيفية استخدام الأفراد والشركات له فعلًا. وخلال ذلك أضفت ميزات ذكاء اصطناعي إلى منتجاتي، ونمت لدي رغبة في فهم كيفية جعل هذه الأنظمة آمنة.",
     p3: "عملت في تطوير البرمجيات ونظم المعلومات والمشاريع الدولية وعمليات الأعمال. علّمني هذا التنوع أن أنظر إلى ما هو أبعد من الكود، وأن أفهم المشكلة الأوسع التي يجب أن يحلّها الحل التقني.",
-    p4Before: "أهتم اليوم بشكل خاص بالتقاطع بين ",
-    p4Highlight: "الذكاء الاصطناعي والأمن السيبراني والتحول الرقمي",
-    p4After:
-      " — لبناء تقنية مفيدة وآمنة وقادرة على النمو إلى ما هو أبعد من مشروع أو سوق واحد.",
-    cards: [
-      {
-        title: "هندسة البرمجيات",
-        text: "تطبيقات الويب والجوال وتطبيقات الأعمال",
-      },
-      {
-        title: "الذكاء الاصطناعي",
-        text: "ميزات ذكاء اصطناعي عملية داخل منتجات حقيقية",
-      },
-      {
-        title: "الأمن السيبراني",
-        text: "أنظمة آمنة وحماية للوصول والبيانات",
-      },
-      {
-        title: "التحول الرقمي",
-        text: "تحويل العمليات الواقعية إلى حلول رقمية",
-      },
-    ],
+
+p4Before: "أرغب اليوم في تعميق معرفتي في التقاطع بين ",
+p4Highlight: "الذكاء الاصطناعي والأمن السيبراني",
+p4After:
+  " — لأتمكن من بناء تقنية مفيدة وآمنة وقادرة على النمو إلى ما هو أبعد من مشروع أو سوق واحد.",
+cards: [
+  {
+    title: "هندسة البرمجيات",
+    text: "تطبيقات الويب والجوال وتطبيقات الأعمال",
+  },
+  {
+    title: "ميزات الذكاء الاصطناعي",
+    text: "استخدام الذكاء الاصطناعي داخل منتجات حقيقية مع مواصلة التعلم",
+  },
+  {
+    title: "الأمان",
+    text: "تطبيق أساسيات الأمان وبناء معرفة أعمق",
+  },
+  {
+    title: "التحول الرقمي",
+    text: "تحويل العمليات الواقعية إلى حلول رقمية",
+  },
+],
   },
   contact: {
     eyebrow: "لنتحدث",
@@ -1317,17 +1319,17 @@ const ku: Copy = {
     closeMenu: "داخستنی مێنیوی گەڕان",
   },
   hero: {
-    badge: "نەرمەکاڵا · زیرەکی دەستکرد · بەرهەمی دیجیتاڵ",
+    badge: "نەرمەکاڵا ·  بەرهەمی دیجیتاڵ",
     title1: "بەرهەمی دیجیتاڵ",
     title2: "دروست دەکەم کە",
     title3: "کێشە ڕاستەقینەکان چارەسەر دەکەن.",
     intro:
-      "بەرهەمی نەرمەکاڵای کاریگەر دیزاین و پەرەپێدەدەم کە ئەندازیاریی مۆدێرن و زیرەکی دەستکرد و ئەزموونی دیجیتاڵیی پارێزراو تێکەڵ دەکات.",
+      "بەرهەمی نەرمەکاڵای کاریگەر دیزاین و پەرەپێدەدەم بۆ بەکارهێنەر و بازاڕی ڕاستەقینە، لەگەڵ تایبەتمەندیی بەکارهێنانی زیرەکی دەستکرد لەو شوێنانەی سوودی هەیە.",
     ctaProducts: "بەرهەمەکانم ببینە",
     ctaAbout: "دەربارەی من",
     stats: [
       { value: "02+", label: "بەرهەمی دیجیتاڵ" },
-      { value: "AI", label: "لەناو بەرهەمەکاندا" },
+      { value: "AI", label: "تایبەتمەندی لە بەرهەمەکانمدا" },
       { value: "عێراق", label: "بازاڕی سەرەکی" },
     ],
   },
@@ -1351,30 +1353,31 @@ const ku: Copy = {
     eyebrow: "دەربارەی من",
     heading: "بەرهەمی دیجیتاڵ دروست دەکەم کە کێشە ڕاستەقینەکان چارەسەر دەکەن.",
     p1: "من گەشەپێدەری نەرمەکاڵا و پسپۆڕی تەکنەلۆژیام، تەرکیزم لەسەر دروستکردنی بەرهەمی دیجیتاڵیی کارا، سیستەمی زیرەک و چارەسەری تەکنەلۆژییە کە لە ژیانی ڕاستەقینەدا بەکار بهێنرێن.",
-    p2: "کارەکەم ئەندازیاریی نەرمەکاڵا لەگەڵ زیرەکی دەستکرد، ئاسایشی سایبەر، داتا و گۆڕانکاریی دیجیتاڵ تێکەڵ دەکات. حەزم لێیە بیرۆکەیەک لە کێشەیەکی ڕاستەقینەوە بگەیەنمە بەرهەمێکی کارا — سیستەمەکە دیزاین بکەم، نەرمەکاڵاکە دروست بکەم و بیر لەوە بکەمەوە خەڵک و کاروبار چۆن بەڕاستی بەکاری دەهێنن.",
+    p2: "کارەکەم لەسەر ئەندازیاریی نەرمەکاڵا چڕ بووەتەوە: بیرۆکەیەک لە کێشەیەکی ڕاستەقینەوە بگەیەنمە بەرهەمێکی کارا، سیستەمەکە دیزاین بکەم و دروستی بکەم و بیر لەوە بکەمەوە خەڵک و کاروبار چۆن بەڕاستی بەکاری دەهێنن. لەو ڕێگەیەدا تایبەتمەندیی زیرەکی دەستکردم خستووەتە ناو بەرهەمەکانمەوە و حەزم کرد بزانم چۆن ئەم سیستەمانە پارێزراو بکرێن.",
     p3: "لە بواری گەشەپێدانی نەرمەکاڵا، سیستەمی زانیاری، پڕۆژە نێودەوڵەتییەکان و کارگێڕیی بزنسدا کارم کردووە. ئەم تێکەڵییە فێری کردم لە کۆد زیاتر ببینم و کێشە فراوانترەکە تێبگەم کە چارەسەری تەکنەلۆژی دەبێت چارەسەری بکات.",
-    p4Before: "ئێستا بەتایبەت حەزم لە بوارەکانی ",
-    p4Highlight: "زیرەکی دەستکرد، ئاسایشی سایبەر و گۆڕانکاریی دیجیتاڵ",
-    p4After:
-      " — بۆ دروستکردنی تەکنەلۆژیایەکی بەسوود و پارێزراو کە بتوانێت لە پڕۆژە یان بازاڕێکی تاک گەورەتر بێت.",
-    cards: [
-      {
-        title: "ئەندازیاریی نەرمەکاڵا",
-        text: "ئەپی وێب و مۆبایل و کاروبار",
-      },
-      {
-        title: "زیرەکی دەستکرد",
-        text: "تایبەتمەندیی زیرەکی دەستکردی کارا لەناو بەرهەمی ڕاستەقینەدا",
-      },
-      {
-        title: "ئاسایشی سایبەر",
-        text: "سیستەمی پارێزراو، دەستپێگەیشتن و پاراستنی داتا",
-      },
-      {
-        title: "گۆڕانکاریی دیجیتاڵ",
-        text: "گۆڕینی پڕۆسەی ڕاستەقینە بۆ چارەسەری دیجیتاڵ",
-      },
-    ],
+  
+p4Before: "ئێستا دەمەوێت زانیارییەکانم قووڵتر بکەم لە بواری ",
+p4Highlight: "زیرەکی دەستکرد و ئاسایشی سایبەر",
+p4After:
+  " — بۆ ئەوەی بتوانم تەکنەلۆژیایەکی بەسوود و پارێزراو دروست بکەم کە لە پڕۆژە یان بازاڕێکی تاک گەورەتر بێت.",
+cards: [
+  {
+    title: "ئەندازیاریی نەرمەکاڵا",
+    text: "ئەپی وێب و مۆبایل و کاروبار",
+  },
+  {
+    title: "تایبەتمەندیی زیرەکی دەستکرد",
+    text: "بەکارهێنانی زیرەکی دەستکرد لە بەرهەمی ڕاستەقینەدا و فێربوونی زیاتر",
+  },
+  {
+    title: "ئاسایش",
+    text: "جێبەجێکردنی بنەماکانی ئاسایش و بەدەستهێنانی زانیاریی قووڵتر",
+  },
+  {
+    title: "گۆڕانکاریی دیجیتاڵ",
+    text: "گۆڕینی پڕۆسەی ڕاستەقینە بۆ چارەسەری دیجیتاڵ",
+  },
+],
   },
   contact: {
     eyebrow: "با قسە بکەین",

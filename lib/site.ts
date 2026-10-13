@@ -5,7 +5,7 @@
 export const SITE = {
   // TODO: put your full name here (e.g. "Nabaz Doski"). Used in titles,
   // metadata and the footer.
-  name: "Nabaz",
+  name: "Nabas Ihsan Mustafa",
   // Short name shown in the header logo (keep it short for mobile).
   brand: "Nabaz",
   // TODO: your real job title
